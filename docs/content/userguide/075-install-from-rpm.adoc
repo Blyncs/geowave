@@ -19,13 +19,13 @@ geowave-cdh5-accumulo, geowave-apache-hbase, etc.)
 # Several of the rpms (accumulo, jetty and tools) are both GeoWave version and vendor version specific
 # In the examples below the rpm name geowave-$VERSION-VENDOR_VERSION would be adjusted as needed
 rpm -Uvh http://s3.amazonaws.com/geowave-rpms/release/noarch/geowave-repo-1.0-3.noarch.rpm
-yum --enablerepo=geowave search geowave-0.9.3-apache
+yum --enablerepo=geowave search geowave-0.9.3.1-apache
 
 # Install GeoWave Accumulo iterator on a host (probably a namenode)
-yum --enablerepo=geowave install geowave-0.9.3-apache-accumulo
+yum --enablerepo=geowave install geowave-0.9.3.1-apache-accumulo
 
 # Update
-yum --enablerepo=geowave install geowave-0.9.3-apache-*
+yum --enablerepo=geowave install geowave-0.9.3.1-apache-*
 ----
 
 GeoWave RPMs
@@ -71,7 +71,7 @@ GeoWave RPMs
 
 RPM names contain the version in the name so support concurrent installations of multiple GeoWave and/or vendor versions.
 A versioned /usr/local/geowave-$GEOWAVE_VERSION-$VENDOR_VERSION directory is linked to /usr/local/geowave using alternatives
-ex: /usr/local/geowave -> /usr/local/geowave-0.9.3-hdp2 but there could also be another /usr/local/geowave-0.9.2.1-cdh5 still
+ex: /usr/local/geowave -> /usr/local/geowave-0.9.3.1-hdp2 but there could also be another /usr/local/geowave-0.9.3.1-cdh5 still
 installed but not the current default.
 
 ==== View geowave-home installed and default using alternatives
@@ -80,10 +80,10 @@ installed but not the current default.
 ----
 alternatives --display geowave-home
 geowave-home - status is auto.
- link currently points to /usr/local/geowave-0.9.3-hdp2
-/usr/local/geowave-0.9.3-hdp2 - priority 90
-/usr/local/geowave-0.9.2.1-cdh5 - priority 89
-Current `best' version is /usr/local/geowave-0.9.3-hdp2.
+ link currently points to /usr/local/geowave-0.9.3.1-hdp2
+/usr/local/geowave-0.9.3.1-hdp2 - priority 90
+/usr/local/geowave-0.9.3.1-cdh5 - priority 89
+Current `best' version is /usr/local/geowave-0.9.3.1-hdp2.
 ----
 
 geowave-*-accumulo: This RPM will install the GeoWave Accumulo iterator into the local file system and then upload

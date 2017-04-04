@@ -38,7 +38,7 @@ aws emr create-cluster \
  * If you are unsure of which groups to use here please see the EC2 Security Group section <<110-appendices.adoc#create-ec2-security-group, here>>.
 - ${EMR_VERSION} - The version of EMR that you want to use for your cluster
  * Example: emr-5.1.0
- * GeoWave version 0.9.3 suports up to EMR version 5.2.0
+ * GeoWave version 0.9.3.1 suports up to EMR version 5.2.0
 - ${DATASTORE} - The datastore you want to use. GeoWave curently suports Accumulo and HBase.
  * Example: accumulo
 - ${YOUR_TAGNAME} - Tag name for the cluster you are creating

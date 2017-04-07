@@ -17,6 +17,7 @@ import mil.nga.giat.geowave.core.store.operations.remote.options.DataStorePlugin
 import mil.nga.giat.geowave.mapreduce.input.GeoWaveInputFormat;
 import mil.nga.giat.geowave.mapreduce.input.GeoWaveInputKey;
 import mil.nga.giat.geowave.mapreduce.operations.CopyCommand;
+import mil.nga.giat.geowave.mapreduce.operations.CopyCommandOptions;
 import mil.nga.giat.geowave.mapreduce.output.GeoWaveOutputFormat;
 import mil.nga.giat.geowave.mapreduce.output.GeoWaveOutputKey;
 
@@ -28,14 +29,17 @@ public class StoreCopyJobRunner extends
 
 	private final DataStorePluginOptions inputStoreOptions;
 	private final DataStorePluginOptions outputStoreOptions;
+	private final CopyCommandOptions options;
 	private final String jobName;
 
 	public StoreCopyJobRunner(
 			final DataStorePluginOptions inputStoreOptions,
 			final DataStorePluginOptions outputStoreOptions,
+			final CopyCommandOptions options,
 			final String jobName ) {
 		this.inputStoreOptions = inputStoreOptions;
 		this.outputStoreOptions = outputStoreOptions;
+		this.options = options;
 		this.jobName = jobName;
 	}
 
@@ -70,6 +74,13 @@ public class StoreCopyJobRunner extends
 		job.setOutputKeyClass(GeoWaveOutputKey.class);
 		job.setOutputValueClass(ObjectWritable.class);
 		job.setNumReduceTasks(8);
+		
+		GeoWaveInputFormat.setMinimumSplitCount(
+				job.getConfiguration(),
+				options.getMinSplits());
+		GeoWaveInputFormat.setMaximumSplitCount(
+				job.getConfiguration(),
+				options.getMaxSplits());
 
 		GeoWaveInputFormat.setStoreOptions(
 				job.getConfiguration(),

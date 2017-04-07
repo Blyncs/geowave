@@ -31,6 +31,7 @@ public class CopyCommand extends
 	@ParametersDelegate
 	private DataStorePluginOptions inputStoreOptions = null;
 	private DataStorePluginOptions outputStoreOptions = null;
+	private CopyCommandOptions options = new CopyCommandOptions();
 
 	@Override
 	public void execute(
@@ -82,6 +83,7 @@ public class CopyCommand extends
 		StoreCopyJobRunner runner = new StoreCopyJobRunner(
 				inputStoreOptions,
 				outputStoreOptions,
+				options,
 				jobName);
 
 		return runner;
@@ -115,5 +117,14 @@ public class CopyCommand extends
 	public void setOutputStoreOptions(
 			DataStorePluginOptions outputStoreOptions ) {
 		this.outputStoreOptions = outputStoreOptions;
+	}
+	
+	public CopyCommandOptions getOptions() {
+		return options;
+	}
+
+	public void setOptions(
+			CopyCommandOptions options ) {
+		this.options = options;
 	}
 }

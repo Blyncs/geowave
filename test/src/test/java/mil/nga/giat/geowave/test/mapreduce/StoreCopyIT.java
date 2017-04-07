@@ -86,39 +86,36 @@ public class StoreCopyIT
 	@Test
 	public void testStoreCopy()
 			throws Exception {
-		TestUtils.deleteAll(
-				inputDataStorePluginOptions);
 		TestUtils.testLocalIngest(
 				inputDataStorePluginOptions,
 				DimensionalityType.SPATIAL,
 				HAIL_SHAPEFILE_FILE,
 				1);
-		
-		DataStore outputDataStore = outputDataStorePluginOptions.createDataStore();
 
-		final MapReduceTestEnvironment env = MapReduceTestEnvironment.getInstance();
+		// final MapReduceTestEnvironment env = MapReduceTestEnvironment.getInstance();
 
-			final CopyCommand command = new CopyCommand();
+		final CopyCommand command = new CopyCommand();
 
-			// We're going to override these anyway.
-			command.setParameters(
-					null,
-					null);
+		// We're going to override these anyway.
+		command.setParameters(
+				null,
+				null);
 
-			command.setInputStoreOptions(
-					outputDataStorePluginOptions);
-			command.setOutputStoreOptions(
-					outputDataStorePluginOptions);
+		command.setInputStoreOptions(
+				outputDataStorePluginOptions);
+		command.setOutputStoreOptions(
+				outputDataStorePluginOptions);
 
-			command.getOptions().setMinSplits(
-					MapReduceTestUtils.MIN_INPUT_SPLITS);
-			command.getOptions().setMaxSplits(
-					MapReduceTestUtils.MAX_INPUT_SPLITS);
-			command.getOptions().setNumThreads(8);
+		command.getOptions().setMinSplits(
+				MapReduceTestUtils.MIN_INPUT_SPLITS);
+		command.getOptions().setMaxSplits(
+				MapReduceTestUtils.MAX_INPUT_SPLITS);
+		command.getOptions().setNumThreads(
+				8);
 
-			ToolRunner.run(
-					command.createRunner(
-							new ManualOperationParams()),
-					new String[] {});
+		ToolRunner.run(
+				command.createRunner(
+						new ManualOperationParams()),
+				new String[] {});
 	}
 }

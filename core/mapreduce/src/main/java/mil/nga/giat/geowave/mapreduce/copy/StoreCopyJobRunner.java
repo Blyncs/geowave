@@ -63,8 +63,8 @@ public class StoreCopyJobRunner extends
 		job.setJobName(jobName);
 
 		job.setMapperClass(StoreCopyMapper.class);
-		job.setCombinerClass(StoreCopyReducer.class);
-		job.setReducerClass(StoreCopyReducer.class);
+//		job.setCombinerClass(StoreCopyReducer.class);
+//		job.setReducerClass(StoreCopyReducer.class);
 
 		job.setInputFormatClass(GeoWaveInputFormat.class);
 		job.setOutputFormatClass(GeoWaveOutputFormat.class);
@@ -73,7 +73,7 @@ public class StoreCopyJobRunner extends
 		job.setMapOutputValueClass(ObjectWritable.class);
 		job.setOutputKeyClass(GeoWaveOutputKey.class);
 		job.setOutputValueClass(ObjectWritable.class);
-		job.setNumReduceTasks(8);
+		job.setNumReduceTasks(options.getNumThreads());
 		
 		GeoWaveInputFormat.setMinimumSplitCount(
 				job.getConfiguration(),

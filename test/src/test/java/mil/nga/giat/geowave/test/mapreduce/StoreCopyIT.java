@@ -1,18 +1,17 @@
 package mil.nga.giat.geowave.test.mapreduce;
 
 import java.io.File;
-import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import mil.nga.giat.geowave.adapter.raster.util.ZipUtils;
 import mil.nga.giat.geowave.core.cli.parser.ManualOperationParams;
-import mil.nga.giat.geowave.core.store.DataStore;
 import mil.nga.giat.geowave.core.store.operations.remote.options.DataStorePluginOptions;
 import mil.nga.giat.geowave.mapreduce.operations.CopyCommand;
 import mil.nga.giat.geowave.test.GeoWaveITRunner;
@@ -22,7 +21,7 @@ import mil.nga.giat.geowave.test.annotation.Environments;
 import mil.nga.giat.geowave.test.annotation.Environments.Environment;
 import mil.nga.giat.geowave.test.annotation.GeoWaveTestStore;
 import mil.nga.giat.geowave.test.annotation.GeoWaveTestStore.GeoWaveStoreType;
-import mil.nga.giat.geowave.test.basic.GeoWaveBasicSpatialVectorIT;
+import mil.nga.giat.geowave.test.basic.AbstractGeoWaveBasicVectorIT;
 
 @RunWith(GeoWaveITRunner.class)
 @Environments({
@@ -32,27 +31,22 @@ import mil.nga.giat.geowave.test.basic.GeoWaveBasicSpatialVectorIT;
 	GeoWaveStoreType.ACCUMULO,
 	GeoWaveStoreType.HBASE
 })
-public class StoreCopyIT
+public class StoreCopyIT extends
+		AbstractGeoWaveBasicVectorIT
 {
-	protected static final String TEST_DATA_ZIP_RESOURCE_PATH = TestUtils.TEST_RESOURCE_PACKAGE + "basic-testdata.zip";
-	protected static final String HAIL_TEST_CASE_PACKAGE = TestUtils.TEST_CASE_BASE + "hail_test_case/";
-	protected static final String HAIL_SHAPEFILE_FILE = HAIL_TEST_CASE_PACKAGE + "hail.shp";
+	private static final String HAIL_EXPECTED_BOX_FILTER_RESULTS_FILE = HAIL_TEST_CASE_PACKAGE + "hail-box-filter.shp";
+	private static final String TEST_BOX_FILTER_FILE = TEST_FILTER_PACKAGE + "Box-Filter.shp";
 
 	protected DataStorePluginOptions outputDataStorePluginOptions;
 	protected DataStorePluginOptions inputDataStorePluginOptions;
+	protected boolean testOutput = false;
 
 	private final static Logger LOGGER = Logger.getLogger(
 			StoreCopyIT.class);
 	private static long startMillis;
 
 	@BeforeClass
-	public static void extractTestFiles()
-			throws URISyntaxException {
-		ZipUtils.unZipFile(
-				new File(
-						GeoWaveBasicSpatialVectorIT.class.getClassLoader().getResource(
-								TEST_DATA_ZIP_RESOURCE_PATH).toURI()),
-				TestUtils.TEST_CASE_BASE);
+	public static void extractTestFiles() {
 
 		startMillis = System.currentTimeMillis();
 		LOGGER.warn(
@@ -92,8 +86,25 @@ public class StoreCopyIT
 				DimensionalityType.SPATIAL,
 				HAIL_SHAPEFILE_FILE,
 				1);
-
-		// final MapReduceTestEnvironment env = MapReduceTestEnvironment.getInstance();
+		
+		// Query the input store
+		try {
+			testQuery(
+					new File(
+							TEST_BOX_FILTER_FILE).toURI().toURL(),
+					new URL[] {
+						new File(
+								HAIL_EXPECTED_BOX_FILTER_RESULTS_FILE).toURI().toURL(),
+					},
+					TestUtils.DEFAULT_SPATIAL_INDEX,
+					"bounding box constraint only");
+		}
+		catch (final Exception e) {
+			e.printStackTrace();
+			TestUtils.deleteAll(inputDataStorePluginOptions);
+			Assert.fail("Error occurred while testing a bounding box query of spatial index: '"
+					+ e.getLocalizedMessage() + "'");
+		}
 
 		// Set up the copy command
 		final CopyCommand command = new CopyCommand();
@@ -112,14 +123,36 @@ public class StoreCopyIT
 				MapReduceTestUtils.MIN_INPUT_SPLITS);
 		command.getOptions().setMaxSplits(
 				MapReduceTestUtils.MAX_INPUT_SPLITS);
-		command.getOptions().setNumThreads(
-				8);
 
 		ToolRunner.run(
 				command.createRunner(
 						new ManualOperationParams()),
 				new String[] {});
+
+		// Query the copy store
+		testOutput = true;
 		
-		// TODO: load/query the copy store
+		try {
+			testQuery(
+					new File(
+							TEST_BOX_FILTER_FILE).toURI().toURL(),
+					new URL[] {
+						new File(
+								HAIL_EXPECTED_BOX_FILTER_RESULTS_FILE).toURI().toURL(),
+					},
+					TestUtils.DEFAULT_SPATIAL_INDEX,
+					"bounding box constraint only");
+		}
+		catch (final Exception e) {
+			e.printStackTrace();
+			TestUtils.deleteAll(outputDataStorePluginOptions);
+			Assert.fail("Error occurred while testing a bounding box query of spatial index: '"
+					+ e.getLocalizedMessage() + "'");
+		}
+	}
+
+	@Override
+	protected DataStorePluginOptions getDataStorePluginOptions() {
+		return testOutput ? outputDataStorePluginOptions : inputDataStorePluginOptions;
 	}
 }

@@ -10,8 +10,8 @@ public class CopyCommandOptions
 	@Parameter(names = "--maxSplits", description = "The max partitions for the input data")
 	private Integer maxSplits;
 
-	@Parameter(names = "--numThreads", description = "Number of threads to use", required = true)
-	private Integer numThreads;
+	@Parameter(names = "--numThreads", description = "Number of threads to use (default = 8)")
+	private Integer numThreads = 8;
 
 	// Default constructor
 	public CopyCommandOptions() {

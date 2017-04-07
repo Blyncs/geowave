@@ -104,7 +104,7 @@ public class StoreCopyIT
 				null);
 
 		command.setInputStoreOptions(
-				outputDataStorePluginOptions);
+				inputDataStorePluginOptions);
 		command.setOutputStoreOptions(
 				outputDataStorePluginOptions);
 

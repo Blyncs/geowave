@@ -29,7 +29,7 @@ import mil.nga.giat.geowave.test.basic.AbstractGeoWaveBasicVectorIT;
 })
 @GeoWaveTestStore({
 	GeoWaveStoreType.ACCUMULO,
-	GeoWaveStoreType.HBASE
+//	GeoWaveStoreType.HBASE
 })
 public class StoreCopyIT extends
 		AbstractGeoWaveBasicVectorIT
@@ -123,6 +123,8 @@ public class StoreCopyIT extends
 				MapReduceTestUtils.MIN_INPUT_SPLITS);
 		command.getOptions().setMaxSplits(
 				MapReduceTestUtils.MAX_INPUT_SPLITS);
+		command.getOptions().setNumReducers(
+				8);
 
 		ToolRunner.run(
 				command.createRunner(

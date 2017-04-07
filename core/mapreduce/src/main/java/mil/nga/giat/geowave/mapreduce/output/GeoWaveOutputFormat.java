@@ -23,6 +23,7 @@ import mil.nga.giat.geowave.core.index.StringUtils;
 import mil.nga.giat.geowave.core.store.DataStore;
 import mil.nga.giat.geowave.core.store.GeoWaveStoreFinder;
 import mil.nga.giat.geowave.core.store.IndexWriter;
+import mil.nga.giat.geowave.core.store.adapter.AdapterIndexMappingStore;
 import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
 import mil.nga.giat.geowave.core.store.adapter.WritableDataAdapter;
@@ -43,7 +44,8 @@ public class GeoWaveOutputFormat extends
 		OutputFormat<GeoWaveOutputKey<Object>, Object>
 {
 	private static final Class<?> CLASS = GeoWaveOutputFormat.class;
-	protected static final Logger LOGGER = Logger.getLogger(CLASS);
+	protected static final Logger LOGGER = Logger.getLogger(
+			CLASS);
 
 	@Override
 	public RecordWriter<GeoWaveOutputKey<Object>, Object> getRecordWriter(
@@ -51,45 +53,61 @@ public class GeoWaveOutputFormat extends
 			throws IOException,
 			InterruptedException {
 		try {
-			final Map<String, String> configOptions = getStoreOptionsMap(context);
-			final AdapterStore persistentAdapterStore = GeoWaveStoreFinder.createAdapterStore(configOptions);
-			final DataAdapter<?>[] adapters = JobContextAdapterStore.getDataAdapters(context);
+			final Map<String, String> configOptions = getStoreOptionsMap(
+					context);
+			final AdapterStore persistentAdapterStore = GeoWaveStoreFinder.createAdapterStore(
+					configOptions);
+			final DataAdapter<?>[] adapters = JobContextAdapterStore.getDataAdapters(
+					context);
 			for (final DataAdapter<?> a : adapters) {
-				if (!persistentAdapterStore.adapterExists(a.getAdapterId())) {
-					persistentAdapterStore.addAdapter(a);
+				if (!persistentAdapterStore.adapterExists(
+						a.getAdapterId())) {
+					persistentAdapterStore.addAdapter(
+							a);
 				}
 			}
 
-			final IndexStore persistentIndexStore = GeoWaveStoreFinder.createIndexStore(configOptions);
-			final Index[] indices = JobContextIndexStore.getIndices(context);
+			final IndexStore persistentIndexStore = GeoWaveStoreFinder.createIndexStore(
+					configOptions);
+			final Index[] indices = JobContextIndexStore.getIndices(
+					context);
 			if (LOGGER.isDebugEnabled()) {
 				final StringBuilder sbDebug = new StringBuilder();
 
-				sbDebug.append("Config Options: ");
+				sbDebug.append(
+						"Config Options: ");
 				for (final Map.Entry<String, String> entry : configOptions.entrySet()) {
-					sbDebug.append(entry.getKey() + "/" + entry.getValue() + ", ");
+					sbDebug.append(
+							entry.getKey() + "/" + entry.getValue() + ", ");
 				}
-				sbDebug.append("\n\tIndices Size: " + indices.length);
-				sbDebug.append("\n\tpersistentIndexStore: " + persistentIndexStore);
+				sbDebug.append(
+						"\n\tIndices Size: " + indices.length);
+				sbDebug.append(
+						"\n\tpersistentIndexStore: " + persistentIndexStore);
 				final String filename = "/META-INF/services/mil.nga.giat.geowave.core.store.StoreFactoryFamilySpi";
 
 				final InputStream is = context.getClass().getResourceAsStream(
 						filename);
 				if (is == null) {
-					sbDebug.append("\n\tStoreFactoryFamilySpi: Unable to open file '" + filename + "'");
+					sbDebug.append(
+							"\n\tStoreFactoryFamilySpi: Unable to open file '" + filename + "'");
 				}
 				else {
-					sbDebug.append("\n\tStoreFactoryFamilySpi: " + IOUtils.toString(
-							is,
-							"UTF-8"));
+					sbDebug.append(
+							"\n\tStoreFactoryFamilySpi: " + IOUtils.toString(
+									is,
+									"UTF-8"));
 				}
 
-				LOGGER.debug(sbDebug.toString());
+				LOGGER.debug(
+						sbDebug.toString());
 			}
 
 			for (final Index i : indices) {
-				if (!persistentIndexStore.indexExists(i.getId())) {
-					persistentIndexStore.addIndex(i);
+				if (!persistentIndexStore.indexExists(
+						i.getId())) {
+					persistentIndexStore.addIndex(
+							i);
 				}
 			}
 			final AdapterStore jobContextAdapterStore = new JobContextAdapterStore(
@@ -98,7 +116,8 @@ public class GeoWaveOutputFormat extends
 			final IndexStore jobContextIndexStore = new JobContextIndexStore(
 					context,
 					persistentIndexStore);
-			final DataStore dataStore = GeoWaveStoreFinder.createDataStore(configOptions);
+			final DataStore dataStore = GeoWaveStoreFinder.createDataStore(
+					configOptions);
 			return new GeoWaveRecordWriter(
 					context,
 					dataStore,
@@ -153,16 +172,23 @@ public class GeoWaveOutputFormat extends
 				adapter);
 	}
 
-	protected static IndexStore getJobContextIndexStore(
+	public static IndexStore getJobContextIndexStore(
 			final JobContext context ) {
 		return GeoWaveConfiguratorBase.getJobContextIndexStore(
 				CLASS,
 				context);
 	}
 
-	protected static AdapterStore getJobContextAdapterStore(
+	public static AdapterStore getJobContextAdapterStore(
 			final JobContext context ) {
 		return GeoWaveConfiguratorBase.getJobContextAdapterStore(
+				CLASS,
+				context);
+	}
+
+	public static AdapterIndexMappingStore getJobContextAdapterIndexMappingStore(
+			final JobContext context ) {
+		return GeoWaveConfiguratorBase.getJobContextAdapterIndexMappingStore(
 				CLASS,
 				context);
 	}
@@ -188,28 +214,37 @@ public class GeoWaveOutputFormat extends
 			InterruptedException {
 		// attempt to get each of the GeoWave stores from the job context
 		try {
-			final Map<String, String> configOptions = getStoreOptionsMap(context);
-			if (GeoWaveStoreFinder.createDataStore(configOptions) == null) {
+			final Map<String, String> configOptions = getStoreOptionsMap(
+					context);
+			if (GeoWaveStoreFinder.createDataStore(
+					configOptions) == null) {
 				final String msg = "Unable to find GeoWave data store";
-				LOGGER.warn(msg);
+				LOGGER.warn(
+						msg);
 				throw new IOException(
 						msg);
 			}
-			if (GeoWaveStoreFinder.createIndexStore(configOptions) == null) {
+			if (GeoWaveStoreFinder.createIndexStore(
+					configOptions) == null) {
 				final String msg = "Unable to find GeoWave index store";
-				LOGGER.warn(msg);
+				LOGGER.warn(
+						msg);
 				throw new IOException(
 						msg);
 			}
-			if (GeoWaveStoreFinder.createAdapterStore(configOptions) == null) {
+			if (GeoWaveStoreFinder.createAdapterStore(
+					configOptions) == null) {
 				final String msg = "Unable to find GeoWave adapter store";
-				LOGGER.warn(msg);
+				LOGGER.warn(
+						msg);
 				throw new IOException(
 						msg);
 			}
-			if (GeoWaveStoreFinder.createDataStatisticsStore(configOptions) == null) {
+			if (GeoWaveStoreFinder.createDataStatisticsStore(
+					configOptions) == null) {
 				final String msg = "Unable to find GeoWave data statistics store";
-				LOGGER.warn(msg);
+				LOGGER.warn(
+						msg);
 				throw new IOException(
 						msg);
 			}
@@ -229,7 +264,8 @@ public class GeoWaveOutputFormat extends
 			final TaskAttemptContext context )
 			throws IOException,
 			InterruptedException {
-		return new NullOutputFormat<ByteArrayId, Object>().getOutputCommitter(context);
+		return new NullOutputFormat<ByteArrayId, Object>().getOutputCommitter(
+				context);
 	}
 
 	/**
@@ -269,22 +305,26 @@ public class GeoWaveOutputFormat extends
 				final GeoWaveOutputKey ingestKey,
 				final Object data )
 				throws IOException {
-			final WritableDataAdapter<?> adapter = ingestKey.getAdapter(adapterStore);
+			final WritableDataAdapter<?> adapter = ingestKey.getAdapter(
+					adapterStore);
 			if (adapter != null) {
 				final IndexWriter indexWriter = getIndexWriter(
 						adapter,
 						ingestKey.getIndexIds());
 				if (indexWriter != null) {
-					indexWriter.write(data);
+					indexWriter.write(
+							data);
 				}
 				else {
-					LOGGER.warn("Cannot write to index '"
-							+ StringUtils.stringFromBinary(ingestKey.getAdapterId().getBytes()) + "'");
+					LOGGER.warn(
+							"Cannot write to index '" + StringUtils.stringFromBinary(
+									ingestKey.getAdapterId().getBytes()) + "'");
 				}
 			}
 			else {
-				LOGGER.warn("Adapter '" + StringUtils.stringFromBinary(ingestKey.getAdapterId().getBytes())
-						+ "' does not exist");
+				LOGGER.warn(
+						"Adapter '" + StringUtils.stringFromBinary(
+								ingestKey.getAdapterId().getBytes()) + "' does not exist");
 			}
 		}
 
@@ -292,23 +332,29 @@ public class GeoWaveOutputFormat extends
 				final DataAdapter<?> adapter,
 				final Collection<ByteArrayId> indexIds )
 				throws MismatchedIndexToAdapterMapping {
-			IndexWriter writer = adapterIdToIndexWriterCache.get(adapter.getAdapterId());
+			IndexWriter writer = adapterIdToIndexWriterCache.get(
+					adapter.getAdapterId());
 			if (writer == null) {
 				final List<PrimaryIndex> indices = new ArrayList<PrimaryIndex>();
 				for (final ByteArrayId indexId : indexIds) {
-					final PrimaryIndex index = (PrimaryIndex) indexStore.getIndex(indexId);
+					final PrimaryIndex index = (PrimaryIndex) indexStore.getIndex(
+							indexId);
 					if (index != null) {
-						indices.add(index);
+						indices.add(
+								index);
 					}
 					else {
-						LOGGER.warn("Index '" + StringUtils.stringFromBinary(indexId.getBytes()) + "' does not exist");
+						LOGGER.warn(
+								"Index '" + StringUtils.stringFromBinary(
+										indexId.getBytes()) + "' does not exist");
 					}
 
 				}
 
 				writer = dataStore.createWriter(
 						adapter,
-						indices.toArray(new PrimaryIndex[indices.size()]));
+						indices.toArray(
+								new PrimaryIndex[indices.size()]));
 
 				adapterIdToIndexWriterCache.put(
 						adapter.getAdapterId(),

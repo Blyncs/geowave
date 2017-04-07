@@ -13,7 +13,12 @@ import org.apache.log4j.Logger;
 import mil.nga.giat.geowave.core.cli.operations.config.options.ConfigOptions;
 import mil.nga.giat.geowave.core.cli.parser.CommandLineOperationParams;
 import mil.nga.giat.geowave.core.cli.parser.OperationParser;
+import mil.nga.giat.geowave.core.store.AdapterToIndexMapping;
+import mil.nga.giat.geowave.core.store.CloseableIterator;
+import mil.nga.giat.geowave.core.store.adapter.AdapterIndexMappingStore;
+import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
 import mil.nga.giat.geowave.core.store.operations.remote.options.DataStorePluginOptions;
+import mil.nga.giat.geowave.mapreduce.JobContextAdapterIndexMappingStore;
 import mil.nga.giat.geowave.mapreduce.input.GeoWaveInputFormat;
 import mil.nga.giat.geowave.mapreduce.input.GeoWaveInputKey;
 import mil.nga.giat.geowave.mapreduce.operations.CopyCommand;
@@ -25,7 +30,8 @@ public class StoreCopyJobRunner extends
 		Configured implements
 		Tool
 {
-	private static final Logger LOGGER = Logger.getLogger(StoreCopyJobRunner.class);
+	private static final Logger LOGGER = Logger.getLogger(
+			StoreCopyJobRunner.class);
 
 	private final DataStorePluginOptions inputStoreOptions;
 	private final DataStorePluginOptions outputStoreOptions;
@@ -53,28 +59,40 @@ public class StoreCopyJobRunner extends
 		Configuration conf = super.getConf();
 		if (conf == null) {
 			conf = new Configuration();
-			setConf(conf);
+			setConf(
+					conf);
 		}
 
-		final Job job = Job.getInstance(conf);
+		final Job job = Job.getInstance(
+				conf);
 
-		job.setJarByClass(this.getClass());
+		job.setJarByClass(
+				this.getClass());
 
-		job.setJobName(jobName);
+		job.setJobName(
+				jobName);
 
-		job.setMapperClass(StoreCopyMapper.class);
-//		job.setCombinerClass(StoreCopyReducer.class);
-//		job.setReducerClass(StoreCopyReducer.class);
+		job.setMapperClass(
+				StoreCopyMapper.class);
+		job.setReducerClass(
+				StoreCopyReducer.class);
 
-		job.setInputFormatClass(GeoWaveInputFormat.class);
-		job.setOutputFormatClass(GeoWaveOutputFormat.class);
+		job.setInputFormatClass(
+				GeoWaveInputFormat.class);
+		job.setOutputFormatClass(
+				GeoWaveOutputFormat.class);
 
-		job.setMapOutputKeyClass(GeoWaveInputKey.class);
-		job.setMapOutputValueClass(ObjectWritable.class);
-		job.setOutputKeyClass(GeoWaveOutputKey.class);
-		job.setOutputValueClass(ObjectWritable.class);
-		job.setNumReduceTasks(options.getNumThreads());
-		
+		job.setMapOutputKeyClass(
+				GeoWaveInputKey.class);
+		job.setMapOutputValueClass(
+				ObjectWritable.class);
+		job.setOutputKeyClass(
+				GeoWaveOutputKey.class);
+		job.setOutputValueClass(
+				Object.class);
+		job.setNumReduceTasks(
+				options.getNumReducers());
+
 		GeoWaveInputFormat.setMinimumSplitCount(
 				job.getConfiguration(),
 				options.getMinSplits());
@@ -89,10 +107,19 @@ public class StoreCopyJobRunner extends
 		GeoWaveOutputFormat.setStoreOptions(
 				job.getConfiguration(),
 				outputStoreOptions);
+		final AdapterIndexMappingStore adapterIndexMappingStore = inputStoreOptions.createAdapterIndexMappingStore();
+		try (CloseableIterator<DataAdapter<?>> adapterIt = inputStoreOptions.createAdapterStore().getAdapters()) {
+			final AdapterToIndexMapping mapping = adapterIndexMappingStore.getIndicesForAdapter(
+					adapterIt.next().getAdapterId());
+			JobContextAdapterIndexMappingStore.addAdapterToIndexMapping(
+					job.getConfiguration(),
+					mapping);
+		}
 
 		boolean retVal = false;
 		try {
-			retVal = job.waitForCompletion(true);
+			retVal = job.waitForCompletion(
+					true);
 		}
 		catch (final IOException ex) {
 			LOGGER.error(
@@ -108,17 +135,21 @@ public class StoreCopyJobRunner extends
 			throws Exception {
 		final ConfigOptions opts = new ConfigOptions();
 		final OperationParser parser = new OperationParser();
-		parser.addAdditionalObject(opts);
+		parser.addAdditionalObject(
+				opts);
 		final CopyCommand command = new CopyCommand();
 		final CommandLineOperationParams params = parser.parse(
 				command,
 				args);
-		opts.prepare(params);
+		opts.prepare(
+				params);
 		final int res = ToolRunner.run(
 				new Configuration(),
-				command.createRunner(params),
+				command.createRunner(
+						params),
 				args);
-		System.exit(res);
+		System.exit(
+				res);
 	}
 
 	@Override

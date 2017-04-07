@@ -12,8 +12,10 @@ import org.junit.runner.RunWith;
 
 import mil.nga.giat.geowave.adapter.raster.util.ZipUtils;
 import mil.nga.giat.geowave.core.cli.parser.ManualOperationParams;
+import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.DataStore;
 import mil.nga.giat.geowave.core.store.operations.remote.options.DataStorePluginOptions;
+import mil.nga.giat.geowave.core.store.query.QueryOptions;
 import mil.nga.giat.geowave.mapreduce.operations.CopyCommand;
 import mil.nga.giat.geowave.test.GeoWaveITRunner;
 import mil.nga.giat.geowave.test.TestUtils;
@@ -30,7 +32,7 @@ import mil.nga.giat.geowave.test.basic.GeoWaveBasicSpatialVectorIT;
 })
 @GeoWaveTestStore({
 	GeoWaveStoreType.ACCUMULO,
-	GeoWaveStoreType.HBASE
+//	GeoWaveStoreType.HBASE
 })
 public class StoreCopyIT
 {
@@ -102,7 +104,7 @@ public class StoreCopyIT
 				null);
 
 		command.setInputStoreOptions(
-				outputDataStorePluginOptions);
+				inputDataStorePluginOptions);
 		command.setOutputStoreOptions(
 				outputDataStorePluginOptions);
 
@@ -110,7 +112,7 @@ public class StoreCopyIT
 				MapReduceTestUtils.MIN_INPUT_SPLITS);
 		command.getOptions().setMaxSplits(
 				MapReduceTestUtils.MAX_INPUT_SPLITS);
-		command.getOptions().setNumThreads(
+		command.getOptions().setNumReducers(
 				8);
 
 		ToolRunner.run(

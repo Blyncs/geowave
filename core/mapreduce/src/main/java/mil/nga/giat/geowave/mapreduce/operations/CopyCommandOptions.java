@@ -10,8 +10,8 @@ public class CopyCommandOptions
 	@Parameter(names = "--maxSplits", description = "The max partitions for the input data")
 	private Integer maxSplits;
 
-	@Parameter(names = "--numThreads", description = "Number of threads to use", required = true)
-	private Integer numThreads;
+	@Parameter(names = "--numReducers", description = "Number of threads writing at a time")
+	private Integer numReducers;
 
 	// Default constructor
 	public CopyCommandOptions() {
@@ -21,10 +21,10 @@ public class CopyCommandOptions
 	public CopyCommandOptions(
 			final Integer minSplits,
 			final Integer maxSplits,
-			final Integer numThreads ) {
+			final Integer numReducers ) {
 		this.minSplits = minSplits;
 		this.maxSplits = maxSplits;
-		this.numThreads = numThreads;
+		this.numReducers = numReducers;
 	}
 
 	public Integer getMinSplits() {
@@ -35,8 +35,8 @@ public class CopyCommandOptions
 		return maxSplits;
 	}
 
-	public Integer getNumThreads() {
-		return numThreads;
+	public Integer getNumReducers() {
+		return numReducers;
 	}
 
 	public void setMinSplits(
@@ -49,8 +49,8 @@ public class CopyCommandOptions
 		this.maxSplits = maxSplits;
 	}
 
-	public void setNumThreads(
-			Integer numThreads ) {
-		this.numThreads = numThreads;
+	public void setNumReducers(
+			Integer numReducers ) {
+		this.numReducers = numReducers;
 	}
 }

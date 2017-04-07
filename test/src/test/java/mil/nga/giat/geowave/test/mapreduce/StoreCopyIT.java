@@ -88,6 +88,7 @@ public class StoreCopyIT
 	@Test
 	public void testStoreCopy()
 			throws Exception {
+		// Load some test data
 		TestUtils.testLocalIngest(
 				inputDataStorePluginOptions,
 				DimensionalityType.SPATIAL,
@@ -96,6 +97,7 @@ public class StoreCopyIT
 
 		// final MapReduceTestEnvironment env = MapReduceTestEnvironment.getInstance();
 
+		// Set up the copy command
 		final CopyCommand command = new CopyCommand();
 
 		// We're going to override these anyway.
@@ -119,5 +121,7 @@ public class StoreCopyIT
 				command.createRunner(
 						new ManualOperationParams()),
 				new String[] {});
+		
+		// TODO: load/query the copy store
 	}
 }

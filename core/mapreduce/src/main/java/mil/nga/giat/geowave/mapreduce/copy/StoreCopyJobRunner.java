@@ -72,10 +72,8 @@ public class StoreCopyJobRunner extends
 		job.setJobName(
 				jobName);
 
-		job.setMapperClass(
-				StoreCopyMapper.class);
-		job.setReducerClass(
-				StoreCopyReducer.class);
+		job.setMapperClass(StoreCopyMapper.class);
+		job.setReducerClass(StoreCopyReducer.class);
 
 		job.setInputFormatClass(
 				GeoWaveInputFormat.class);

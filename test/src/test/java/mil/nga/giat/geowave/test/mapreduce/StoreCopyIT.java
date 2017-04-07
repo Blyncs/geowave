@@ -29,7 +29,7 @@ import mil.nga.giat.geowave.test.basic.AbstractGeoWaveBasicVectorIT;
 })
 @GeoWaveTestStore({
 	GeoWaveStoreType.ACCUMULO,
-//	GeoWaveStoreType.HBASE
+	GeoWaveStoreType.HBASE
 })
 public class StoreCopyIT extends
 		AbstractGeoWaveBasicVectorIT
@@ -86,7 +86,7 @@ public class StoreCopyIT extends
 				DimensionalityType.SPATIAL,
 				HAIL_SHAPEFILE_FILE,
 				1);
-		
+
 		// Query the input store
 		try {
 			testQuery(
@@ -101,39 +101,50 @@ public class StoreCopyIT extends
 		}
 		catch (final Exception e) {
 			e.printStackTrace();
-			TestUtils.deleteAll(inputDataStorePluginOptions);
-			Assert.fail("Error occurred while testing a bounding box query of spatial index: '"
-					+ e.getLocalizedMessage() + "'");
+			TestUtils.deleteAll(
+					inputDataStorePluginOptions);
+			Assert.fail(
+					"Error occurred while querying the input store: '" + e.getLocalizedMessage()
+							+ "'");
 		}
 
-		// Set up the copy command
-		final CopyCommand command = new CopyCommand();
+		try {
+			// Set up the copy command
+			final CopyCommand command = new CopyCommand();
 
-		// We're going to override these anyway.
-		command.setParameters(
-				null,
-				null);
+			// We're going to override these anyway.
+			command.setParameters(
+					null,
+					null);
 
-		command.setInputStoreOptions(
-				inputDataStorePluginOptions);
-		command.setOutputStoreOptions(
-				outputDataStorePluginOptions);
+			command.setInputStoreOptions(
+					inputDataStorePluginOptions);
+			command.setOutputStoreOptions(
+					outputDataStorePluginOptions);
 
-		command.getOptions().setMinSplits(
-				MapReduceTestUtils.MIN_INPUT_SPLITS);
-		command.getOptions().setMaxSplits(
-				MapReduceTestUtils.MAX_INPUT_SPLITS);
-		command.getOptions().setNumReducers(
-				8);
+			command.getOptions().setMinSplits(
+					MapReduceTestUtils.MIN_INPUT_SPLITS);
+			command.getOptions().setMaxSplits(
+					MapReduceTestUtils.MAX_INPUT_SPLITS);
+			command.getOptions().setNumReducers(
+					8);
 
-		ToolRunner.run(
-				command.createRunner(
-						new ManualOperationParams()),
-				new String[] {});
+			ToolRunner.run(
+					command.createRunner(
+							new ManualOperationParams()),
+					new String[] {});
+		}
+		catch (final Exception e) {
+			e.printStackTrace();
+			TestUtils.deleteAll(
+					inputDataStorePluginOptions);
+			Assert.fail(
+					"Error occurred while copying the datastore: '" + e.getLocalizedMessage() + "'");
+		}
 
 		// Query the copy store
 		testOutput = true;
-		
+
 		try {
 			testQuery(
 					new File(
@@ -147,9 +158,11 @@ public class StoreCopyIT extends
 		}
 		catch (final Exception e) {
 			e.printStackTrace();
-			TestUtils.deleteAll(outputDataStorePluginOptions);
-			Assert.fail("Error occurred while testing a bounding box query of spatial index: '"
-					+ e.getLocalizedMessage() + "'");
+			TestUtils.deleteAll(
+					outputDataStorePluginOptions);
+			Assert.fail(
+					"Error occurred while querying the output store: '" + e.getLocalizedMessage()
+							+ "'");
 		}
 	}
 

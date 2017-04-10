@@ -18,7 +18,7 @@ import mil.nga.giat.geowave.mapreduce.output.GeoWaveOutputKey;
  * A basic implementation of copy as a reducer
  */
 public class StoreCopyReducer extends
-GeoWaveWritableInputReducer<GeoWaveOutputKey, Object>
+		GeoWaveWritableInputReducer<GeoWaveOutputKey, Object>
 {
 	private AdapterIndexMappingStore store;
 

@@ -45,8 +45,7 @@ public class StoreCopyIT extends
 	private static long startMillis;
 
 	@BeforeClass
-	public static void extractTestFiles() {
-
+	public static void reportTestStart() {
 		startMillis = System.currentTimeMillis();
 		LOGGER.warn("-----------------------------------------");
 		LOGGER.warn("*                                       *");

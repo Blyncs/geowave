@@ -13,7 +13,6 @@ public class CopyCommandOptions
 	@Parameter(names = "--numReducers", description = "Number of threads writing at a time (default: 8)")
 	private Integer numReducers = 8;
 
-
 	// Default constructor
 	public CopyCommandOptions() {
 

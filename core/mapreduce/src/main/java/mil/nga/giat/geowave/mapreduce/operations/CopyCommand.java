@@ -118,7 +118,7 @@ public class CopyCommand extends
 			DataStorePluginOptions outputStoreOptions ) {
 		this.outputStoreOptions = outputStoreOptions;
 	}
-	
+
 	public CopyCommandOptions getOptions() {
 		return options;
 	}

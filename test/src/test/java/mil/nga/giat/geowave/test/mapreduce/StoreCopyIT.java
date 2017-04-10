@@ -41,40 +41,30 @@ public class StoreCopyIT extends
 	protected DataStorePluginOptions inputDataStorePluginOptions;
 	protected boolean testOutput = false;
 
-	private final static Logger LOGGER = Logger.getLogger(
-			StoreCopyIT.class);
+	private final static Logger LOGGER = Logger.getLogger(StoreCopyIT.class);
 	private static long startMillis;
 
 	@BeforeClass
 	public static void extractTestFiles() {
 
 		startMillis = System.currentTimeMillis();
-		LOGGER.warn(
-				"-----------------------------------------");
-		LOGGER.warn(
-				"*                                       *");
-		LOGGER.warn(
-				"*         RUNNING StoreCopyIT           *");
-		LOGGER.warn(
-				"*                                       *");
-		LOGGER.warn(
-				"-----------------------------------------");
+		LOGGER.warn("-----------------------------------------");
+		LOGGER.warn("*                                       *");
+		LOGGER.warn("*         RUNNING StoreCopyIT           *");
+		LOGGER.warn("*                                       *");
+		LOGGER.warn("-----------------------------------------");
 	}
 
 	@AfterClass
 	public static void reportTest() {
-		LOGGER.warn(
-				"-----------------------------------------");
-		LOGGER.warn(
-				"*                                       *");
-		LOGGER.warn(
-				"*      FINISHED StoreCopyIT             *");
-		LOGGER.warn(
-				"*         " + ((System.currentTimeMillis() - startMillis) / 1000) + "s elapsed.                 *");
-		LOGGER.warn(
-				"*                                       *");
-		LOGGER.warn(
-				"-----------------------------------------");
+		LOGGER.warn("-----------------------------------------");
+		LOGGER.warn("*                                       *");
+		LOGGER.warn("*      FINISHED StoreCopyIT             *");
+		LOGGER
+				.warn("*         " + ((System.currentTimeMillis() - startMillis) / 1000)
+						+ "s elapsed.                 *");
+		LOGGER.warn("*                                       *");
+		LOGGER.warn("-----------------------------------------");
 	}
 
 	@Test
@@ -101,11 +91,8 @@ public class StoreCopyIT extends
 		}
 		catch (final Exception e) {
 			e.printStackTrace();
-			TestUtils.deleteAll(
-					inputDataStorePluginOptions);
-			Assert.fail(
-					"Error occurred while querying the input store: '" + e.getLocalizedMessage()
-							+ "'");
+			TestUtils.deleteAll(inputDataStorePluginOptions);
+			Assert.fail("Error occurred while querying the input store: '" + e.getLocalizedMessage() + "'");
 		}
 
 		try {
@@ -117,10 +104,8 @@ public class StoreCopyIT extends
 					null,
 					null);
 
-			command.setInputStoreOptions(
-					inputDataStorePluginOptions);
-			command.setOutputStoreOptions(
-					outputDataStorePluginOptions);
+			command.setInputStoreOptions(inputDataStorePluginOptions);
+			command.setOutputStoreOptions(outputDataStorePluginOptions);
 
 			command.getOptions().setMinSplits(
 					MapReduceTestUtils.MIN_INPUT_SPLITS);
@@ -130,16 +115,13 @@ public class StoreCopyIT extends
 					8);
 
 			ToolRunner.run(
-					command.createRunner(
-							new ManualOperationParams()),
+					command.createRunner(new ManualOperationParams()),
 					new String[] {});
 		}
 		catch (final Exception e) {
 			e.printStackTrace();
-			TestUtils.deleteAll(
-					inputDataStorePluginOptions);
-			Assert.fail(
-					"Error occurred while copying the datastore: '" + e.getLocalizedMessage() + "'");
+			TestUtils.deleteAll(inputDataStorePluginOptions);
+			Assert.fail("Error occurred while copying the datastore: '" + e.getLocalizedMessage() + "'");
 		}
 
 		// Query the copy store
@@ -158,11 +140,8 @@ public class StoreCopyIT extends
 		}
 		catch (final Exception e) {
 			e.printStackTrace();
-			TestUtils.deleteAll(
-					outputDataStorePluginOptions);
-			Assert.fail(
-					"Error occurred while querying the output store: '" + e.getLocalizedMessage()
-							+ "'");
+			TestUtils.deleteAll(outputDataStorePluginOptions);
+			Assert.fail("Error occurred while querying the output store: '" + e.getLocalizedMessage() + "'");
 		}
 	}
 

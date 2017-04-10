@@ -49,8 +49,7 @@ public class JobContextAdapterIndexMappingStore implements
 				adapterId);
 		if (adapter == null) {
 			// then try to get it from the persistent store
-			adapter = persistentAdapterIndexMappingStore.getIndicesForAdapter(
-					adapterId);
+			adapter = persistentAdapterIndexMappingStore.getIndicesForAdapter(adapterId);
 		}
 
 		if (adapter != null) {
@@ -75,7 +74,6 @@ public class JobContextAdapterIndexMappingStore implements
 				adapterId);
 	}
 
-
 	public static void addAdapterToIndexMapping(
 			final Configuration configuration,
 			final AdapterToIndexMapping adapter ) {
@@ -88,11 +86,9 @@ public class JobContextAdapterIndexMappingStore implements
 	@Override
 	public AdapterToIndexMapping getIndicesForAdapter(
 			ByteArrayId adapterId ) {
-		AdapterToIndexMapping adapter = adapterCache.get(
-				adapterId);
+		AdapterToIndexMapping adapter = adapterCache.get(adapterId);
 		if (adapter == null) {
-			adapter = getIndicesForAdapterInternal(
-					adapterId);
+			adapter = getIndicesForAdapterInternal(adapterId);
 		}
 		return adapter;
 	}

@@ -32,7 +32,7 @@ public class CopyCommandOptions
 		this.maxSplits = maxSplits;
 		this.numReducers = numReducers;
 	}
-	
+
 	public String getHdfsHostPort() {
 		return hdfsHostPort;
 	}

@@ -29,9 +29,10 @@ public class CopyCommand extends
 	private List<String> parameters = new ArrayList<String>();
 
 	@ParametersDelegate
+	private CopyCommandOptions options = new CopyCommandOptions();
+
 	private DataStorePluginOptions inputStoreOptions = null;
 	private DataStorePluginOptions outputStoreOptions = null;
-	private CopyCommandOptions options = new CopyCommandOptions();
 
 	@Override
 	public void execute(

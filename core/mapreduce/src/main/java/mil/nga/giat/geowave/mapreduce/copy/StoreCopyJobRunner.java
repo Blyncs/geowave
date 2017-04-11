@@ -61,12 +61,11 @@ public class StoreCopyJobRunner extends
 			conf = new Configuration();
 			setConf(conf);
 		}
-		
+
 		GeoWaveConfiguratorBase.setRemoteInvocationParams(
 				options.getHdfsHostPort(),
 				options.getJobTrackerOrResourceManHostPort(),
 				conf);
-
 
 		final Job job = Job.getInstance(conf);
 

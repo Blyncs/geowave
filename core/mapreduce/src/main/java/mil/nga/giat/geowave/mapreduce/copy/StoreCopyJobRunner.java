@@ -17,6 +17,9 @@ import mil.nga.giat.geowave.core.store.AdapterToIndexMapping;
 import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.adapter.AdapterIndexMappingStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.WritableDataAdapter;
+import mil.nga.giat.geowave.core.store.index.Index;
+import mil.nga.giat.geowave.core.store.index.PrimaryIndex;
 import mil.nga.giat.geowave.core.store.operations.remote.options.DataStorePluginOptions;
 import mil.nga.giat.geowave.mapreduce.GeoWaveConfiguratorBase;
 import mil.nga.giat.geowave.mapreduce.JobContextAdapterIndexMappingStore;
@@ -102,12 +105,31 @@ public class StoreCopyJobRunner extends
 
 		final AdapterIndexMappingStore adapterIndexMappingStore = inputStoreOptions.createAdapterIndexMappingStore();
 		try (CloseableIterator<DataAdapter<?>> adapterIt = inputStoreOptions.createAdapterStore().getAdapters()) {
-			final AdapterToIndexMapping mapping = adapterIndexMappingStore.getIndicesForAdapter(adapterIt
-					.next()
-					.getAdapterId());
-			JobContextAdapterIndexMappingStore.addAdapterToIndexMapping(
-					job.getConfiguration(),
-					mapping);
+			while (adapterIt.hasNext()) {
+				DataAdapter<?> dataAdapter = adapterIt.next();
+
+				GeoWaveOutputFormat.addDataAdapter(
+						job.getConfiguration(),
+						dataAdapter);
+
+				final AdapterToIndexMapping mapping = adapterIndexMappingStore.getIndicesForAdapter(dataAdapter
+						.getAdapterId());
+
+				JobContextAdapterIndexMappingStore.addAdapterToIndexMapping(
+						job.getConfiguration(),
+						mapping);
+			}
+		}
+
+		try (CloseableIterator<Index<?, ?>> indexIt = inputStoreOptions.createIndexStore().getIndices()) {
+			while (indexIt.hasNext()) {
+				Index<?, ?> index = indexIt.next();
+				if (index instanceof PrimaryIndex) {
+					GeoWaveOutputFormat.addIndex(
+							job.getConfiguration(),
+							(PrimaryIndex) index);
+				}
+			}
 		}
 
 		boolean retVal = false;

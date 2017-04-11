@@ -20,6 +20,7 @@ import mil.nga.giat.geowave.test.TestUtils.DimensionalityType;
 import mil.nga.giat.geowave.test.annotation.Environments;
 import mil.nga.giat.geowave.test.annotation.Environments.Environment;
 import mil.nga.giat.geowave.test.annotation.GeoWaveTestStore;
+import mil.nga.giat.geowave.test.annotation.NamespaceOverride;
 import mil.nga.giat.geowave.test.annotation.GeoWaveTestStore.GeoWaveStoreType;
 import mil.nga.giat.geowave.test.basic.AbstractGeoWaveBasicVectorIT;
 
@@ -37,7 +38,9 @@ public class StoreCopyIT extends
 	private static final String HAIL_EXPECTED_BOX_FILTER_RESULTS_FILE = HAIL_TEST_CASE_PACKAGE + "hail-box-filter.shp";
 	private static final String TEST_BOX_FILTER_FILE = TEST_FILTER_PACKAGE + "Box-Filter.shp";
 
+	@NamespaceOverride("storecopy")
 	protected DataStorePluginOptions outputDataStorePluginOptions;
+	
 	protected DataStorePluginOptions inputDataStorePluginOptions;
 	protected boolean testOutput = false;
 

@@ -18,6 +18,7 @@ import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.adapter.AdapterIndexMappingStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
 import mil.nga.giat.geowave.core.store.operations.remote.options.DataStorePluginOptions;
+import mil.nga.giat.geowave.mapreduce.GeoWaveConfiguratorBase;
 import mil.nga.giat.geowave.mapreduce.JobContextAdapterIndexMappingStore;
 import mil.nga.giat.geowave.mapreduce.input.GeoWaveInputFormat;
 import mil.nga.giat.geowave.mapreduce.input.GeoWaveInputKey;
@@ -60,6 +61,12 @@ public class StoreCopyJobRunner extends
 			conf = new Configuration();
 			setConf(conf);
 		}
+		
+		GeoWaveConfiguratorBase.setRemoteInvocationParams(
+				options.getHdfsHostPort(),
+				options.getJobTrackerOrResourceManHostPort(),
+				conf);
+
 
 		final Job job = Job.getInstance(conf);
 

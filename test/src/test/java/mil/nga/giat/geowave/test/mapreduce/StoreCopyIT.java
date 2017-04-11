@@ -95,6 +95,8 @@ public class StoreCopyIT extends
 		}
 
 		try {
+			final MapReduceTestEnvironment env = MapReduceTestEnvironment.getInstance();
+
 			// Set up the copy command
 			final CopyCommand command = new CopyCommand();
 
@@ -105,6 +107,11 @@ public class StoreCopyIT extends
 
 			command.setInputStoreOptions(inputDataStorePluginOptions);
 			command.setOutputStoreOptions(outputDataStorePluginOptions);
+			
+			command.getOptions().setHdfsHostPort(
+					env.getHdfs());
+			command.getOptions().setJobTrackerOrResourceManHostPort(
+					env.getJobtracker());
 
 			command.getOptions().setMinSplits(
 					MapReduceTestUtils.MIN_INPUT_SPLITS);
